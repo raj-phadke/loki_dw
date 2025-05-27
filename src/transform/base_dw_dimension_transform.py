@@ -25,6 +25,41 @@ class BaseDwDimensionTransform(BaseDWTransform):
                 "For DimensionConfig, base_data must be a single DataMappingConfig instance."
             )
 
+    def preprocess_data(self) -> DwEntity:
+        """
+        Applying common preprocessing steps to the dataframe
+        """
+        input_df = self.utils.lowercase_all_columns(df=self.config.base_data.df)
+
+        # Select required columns
+        select_columns = self.config.base_data.select_columns
+        self.logger.info(f"Selecting specified columns: {select_columns}")
+        df_selected = self.utils.select_columns(df=input_df, cols=select_columns)
+
+        # Apply column mapping and casting
+        self.logger.info("Applying column mapping")
+        df_remapped = self.utils.rename_and_cast_columns_with_check(
+            df=df_selected, rename_map=self.config.base_data.column_mapping
+        )
+
+        sk_column_name = f"sk_{self.entity_name.lower()}"
+
+        # Create sk column using hash
+        self.logger.info(f"Creating Dimension SK: {sk_column_name}")
+        df_with_hash_column = self.utils.create_hash_column(
+            df=df_remapped,
+            col_list=self.config.primary_key_columns,
+            output_col=sk_column_name,
+        )
+
+        # Rearrange the df
+        self.logger.info("Rearranging df columns")
+        df_rearranged = self.utils.rearrange_columns(
+            df=df_with_hash_column, col_name=sk_column_name
+        )
+
+        return df_rearranged
+
     @abstractmethod
     def create_dimension_data(self) -> DwEntity:
         """
