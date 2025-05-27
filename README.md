@@ -1,5 +1,5 @@
 ## loki_dw (named after my curious tuxedo cat)
-![images](https://github.com/user-attachments/assets/b03884cc-bff6-4e98-ad8c-c15e0f974de8)
+![istockphoto-887078372-612x612](https://github.com/user-attachments/assets/d803f49b-9ddd-4618-891d-4f963ff99672)
 
 loki_dw repository provides an extensible framework for building Data Warehouse (DW) dimension transformations using Apache Spark. It includes concrete implementations for Slowly Changing Dimensions (SCD) Type 1 and Type 2, utilities for handling DataFrame transformations, and validation mechanisms via configuration classes.
 
