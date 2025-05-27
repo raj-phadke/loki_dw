@@ -53,6 +53,17 @@ class DwFactConfig(BaseDwConfig):
         return values
 
 
+class CDCParams(BaseModel):
+    cdc_columns: List[str] = []
+    exclude_columns: List[str] = [
+        "dw_created_at",
+        "dw_start_date",
+        "dw_end_date",
+        "is_active",
+    ]
+    expire_source_dropped_records: bool = True
+
+
 class DwDimensionConfig(BaseDwConfig):
     base_entity_key: str
     entity_type: str = "Dimension"
@@ -68,6 +79,7 @@ class DwDimensionConfig(BaseDwConfig):
     primary_key_columns: List[str]
     attribute_columns: List[str]
     grain: Optional[List[str]] = None
+    cdc_params: Optional[CDCParams] = None
 
     @model_validator(mode="before")
     def validate_basic_grain(cls, values):
@@ -116,4 +128,15 @@ class DwDimensionConfig(BaseDwConfig):
                 f"Available keys: {available_keys}"
             )
 
+        return values
+
+    @model_validator(mode="before")
+    def validate_cdc_params_for_scd2(cls, values):
+        entity_subtype = values.get("entity_subtype")
+        cdc_params = values.get("cdc_params")
+
+        if entity_subtype != "SCD2" and cdc_params is not None:
+            raise ValueError(
+                f"cdc_params can only be set for 'SCD2' subtype, but found for '{entity_subtype}'."
+            )
         return values

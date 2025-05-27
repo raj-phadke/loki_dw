@@ -4,6 +4,7 @@ import logging
 from pyspark.sql import DataFrame
 from src.config.transform_config.dw_config import BaseDwConfig
 from src.utils.dw_transform_utils import DwTransformUtils
+from src.setup.setup_spark import SetupSpark
 
 
 @dataclass
@@ -20,6 +21,7 @@ class BaseDWTransform(ABC):
     def __init__(self, config: BaseDwConfig) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.config = config
+        self.spark = SetupSpark().create_session()
         self.utils = (
             DwTransformUtils()
         )  # Creating an instance of utils to be used by concrete implementations
