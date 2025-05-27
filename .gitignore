@@ -15,3 +15,6 @@ Thumbs.db
 
 # Ignore environment variables or credentials
 .env
+
+# Ignore test script files 
+test_script.py
