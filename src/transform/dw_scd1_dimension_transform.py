@@ -19,6 +19,7 @@ class DwSCDType1DimensionTransform(BaseDwDimensionTransform):
         """
         Concrete implementation of create_dimension_data method to create SCD Type 1 Dimension
         """
+        self.logger.info(f"Staring Build: Type1 SCD Dimension {self.entity_name}")
         input_df = self.utils.lowercase_all_columns(df=self.config.base_data.df)
 
         # Select required columns
@@ -48,4 +49,5 @@ class DwSCDType1DimensionTransform(BaseDwDimensionTransform):
         # Add metadata column to the df
         df_final = self.add_metadata_columns(df=df_rearranged)
 
+        self.logger.info(f"Succesfully created Type1 SCD Dimension {self.entity_name}")
         return DwEntity(entity_name=self.entity_name, entity=df_final)
